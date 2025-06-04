@@ -132,7 +132,7 @@ const PetsPage: React.FC = () => {
                 <InputBase
                   placeholder="Search pets..."
                   value={searchQuery}
-                  onChange={(e) =>  setSearchQuery(e.target.value)}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   sx={{
                     color: "inherit",
                     padding: theme.spacing(1, 1, 1, 6),
@@ -174,9 +174,7 @@ const PetsPage: React.FC = () => {
                       }}
                       src={user?.avatar}
                     >
-                      <> {console.log('user: ', user)}
-                      {getInitials(user.username)}</>
-                     
+                      {getInitials(user.username)}
                     </Avatar>
                   </IconButton>
                 </Box>

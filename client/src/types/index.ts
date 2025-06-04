@@ -9,6 +9,7 @@ export interface Pet {
   image: string;
   rating?: number;
   favorites?: Pet[];
+  ownerId?: number;
 }
 
 export interface PetsState {

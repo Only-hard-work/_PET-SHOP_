@@ -1,4 +1,4 @@
-import { AuthActionTypes } from '../constants/actionTypes';
+import { AuthActionTypes } from "../constants/actionTypes";
 
 interface AuthState {
   token: string | null;
@@ -8,10 +8,10 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  token: localStorage.getItem('token'),
+  token: localStorage.getItem("token"),
   user: null,
   loading: false,
-  error: null
+  error: null,
 };
 
 export default function authReducer(
@@ -25,31 +25,28 @@ export default function authReducer(
       return {
         ...state,
         loading: true,
-        error: null
+        error: null,
       };
-      
-    case AuthActionTypes.REGISTER_SUCCESS:
-    case AuthActionTypes.LOGIN_SUCCESS:
-    {
-     console.log(action);
 
+    case AuthActionTypes.REGISTER_SUCCESS:
+    case AuthActionTypes.LOGIN_SUCCESS: {
       return {
         ...state,
         token: action.payload.token,
         user: action.payload.user,
         loading: false,
-        error: null
+        error: null,
       };
     }
-      
+
     case AuthActionTypes.LOAD_USER_SUCCESS:
       return {
         ...state,
         user: action.payload,
         loading: false,
-        error: null
+        error: null,
       };
-      
+
     case AuthActionTypes.REGISTER_FAILURE:
     case AuthActionTypes.LOGIN_FAILURE:
     case AuthActionTypes.LOAD_USER_FAILURE:
@@ -58,16 +55,16 @@ export default function authReducer(
         token: null,
         user: null,
         loading: false,
-        error: action.payload
+        error: action.payload,
       };
-      
+
     case AuthActionTypes.LOGOUT:
       return {
         ...state,
         token: null,
-        user: null
+        user: null,
       };
-      
+
     default:
       return state;
   }

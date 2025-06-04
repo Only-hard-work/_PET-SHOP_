@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { NOW, Op } from "sequelize";
 import Pet from "../models/pet.model";
+import { ImageService } from "../services/image.service";
 
 export default {
   // Получить всех питомцев с пагинацией и фильтрацией
@@ -27,11 +27,15 @@ export default {
     }
   },
 
-  // Создать нового питомца (для админа)
   async createPet(req: Request, res: Response) {
     try {
-      const { name, breed, age, price, description, image, ownerId, type } =
-        req.body;
+      const { name, breed, age, price, description, ownerId, type } = req.body;
+      const imageFile = req.file;
+      let imageUrl = null;
+
+      if (imageFile) {
+        imageUrl = await ImageService.uploadImage(imageFile);
+      }
 
       const pet = await Pet.create({
         name,
@@ -39,7 +43,7 @@ export default {
         age: Number(age),
         price: Number(price),
         description,
-        image,
+        image: imageUrl || "",
         ownerId: ownerId ? Number(ownerId) : null,
         type,
         createdAt: new Date(),
@@ -48,11 +52,11 @@ export default {
 
       res.status(201).json(pet);
     } catch (error) {
+      console.error(error);
       res.status(500).json({ message: "Error creating pet", error });
     }
   },
 
-  // Обновить питомца (для админа)
   async updatePet(req: Request, res: Response) {
     try {
       const pet = await Pet.findByPk(req.params.id);
@@ -67,20 +71,25 @@ export default {
     }
   },
 
-  // Удалить питомца (для админа)
   async deletePet(req: Request, res: Response) {
     try {
-      const pet = await Pet.findByPk(req.params.id);
-      if (pet) {
-        await pet.destroy();
-        res.json({ message: "Pet deleted successfully" });
-      } else res.status(404).json({ message: "Pet not found" });
+      const petId = req.params.id; // Get ID from URL params
+
+      // Validate ID
+      if (!petId || isNaN(Number(petId))) {
+        res.status(400).json({ message: "Invalid pet ID" });
+      }
+
+      const pet = await Pet.findByPk(petId);
+
+      if (!pet) {
+        res.status(404).json({ message: "Pet not found" });
+      } else await pet.destroy();
     } catch (error) {
       res.status(500).json({ message: "Error deleting pet", error });
     }
   },
 
-  // Получить популярных питомцев
   async getPopularPets(req: Request, res: Response) {
     try {
       const pets = await Pet.findAll({

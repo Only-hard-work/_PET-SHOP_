@@ -11,7 +11,6 @@ const upload = multer();
 // Middleware
 app.use(cors());
 app.use(express.json())
-app.use(upload.none());
 
 // Routes
 app.use('/api/auth', authRoutes);

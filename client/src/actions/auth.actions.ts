@@ -31,7 +31,6 @@ export const login = (credentials: {
   dispatch({ type: AuthActionTypes.LOGIN_REQUEST });
   try {
     const response = await api.login(credentials);
-    console.log('response: ', response.data);
     dispatch({
       type: AuthActionTypes.LOGIN_SUCCESS,
       payload: response.data

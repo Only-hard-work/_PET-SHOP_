@@ -1,20 +1,20 @@
-import axios from 'axios';
-import { UserLoginData, UserRegisterData } from '../types/auth.types';
+import axios from "axios";
+import { UserLoginData, UserRegisterData } from "../types/auth.types";
 
 // Базовый URL для API (должен совпадать с бэкенд-роутом)
-const API_URL = process.env.REACT_APP_API_URL + '/api/auth';
+const API_URL = process.env.REACT_APP_API_URL + "/api/auth";
 
 // Настройка экземпляра axios
 const api = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 // Добавляем интерсептор для автоматической подстановки токена
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -28,7 +28,7 @@ const AuthService = {
    */
   async register(userData: UserRegisterData) {
     try {
-      const response = await api.post('/register', userData);
+      const response = await api.post("/register", userData);
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -41,9 +41,8 @@ const AuthService = {
    */
   async login(credentials: UserLoginData) {
     try {
-      const response = await api.post('/login', credentials);
+      const response = await api.post("/login", credentials);
 
-      console.log('res data:', response.data);
       return response;
     } catch (error) {
       throw this.handleError(error);
@@ -55,7 +54,7 @@ const AuthService = {
    */
   async getMe() {
     try {
-      const response = await api.get('/me');
+      const response = await api.get("/me");
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -66,19 +65,19 @@ const AuthService = {
    * Обработка ошибок API
    * @param error Ошибка axios
    */
-   handleError(error: any) {
+  handleError(error: any) {
     if (error.response) {
       // Сервер ответил с кодом ошибки
-      const message = error.response.data?.message || 'Request failed';
+      const message = error.response.data?.message || "Request failed";
       return new Error(message);
     } else if (error.request) {
       // Запрос был сделан, но ответ не получен
-      return new Error('No response from server');
+      return new Error("No response from server");
     } else {
       // Ошибка при настройке запроса
-      return new Error('Request setup error');
+      return new Error("Request setup error");
     }
-  }
+  },
 };
 
 export default AuthService;

@@ -27,7 +27,6 @@ type PetFormData = {
   age: number;
   price: number;
   description: string;
-  image: string; // base64 строка
 };
 
 export const PetForm = () => {
@@ -38,9 +37,10 @@ export const PetForm = () => {
     setValue,
     watch,
   } = useForm<PetFormData>({ mode: "onChange" });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -49,11 +49,11 @@ export const PetForm = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         const imageData = reader.result as string;
         setPreviewImage(imageData);
-        setValue("image", imageData, { shouldValidate: true });
       };
       reader.readAsDataURL(file);
     }
@@ -65,11 +65,13 @@ export const PetForm = () => {
 
   const onSubmit: SubmitHandler<PetFormData> = async (data) => {
     if (!user) return;
-    
+
     setIsSubmitting(true);
     try {
       const formData = new FormData();
-      
+
+      console.log("data", data);
+
       // Добавляем все поля как строки
       formData.append("name", data.name);
       formData.append("type", data.type);
@@ -78,10 +80,19 @@ export const PetForm = () => {
       formData.append("price", data.price.toString());
       formData.append("description", data.description);
       formData.append("ownerId", user.id.toString());
-      formData.append("image", 'ewe.jpg'); // base64 строка
+
+      console.log(selectedFile);
+
+      if (selectedFile) {
+        formData.append("image", selectedFile);
+      }
+
+      Array.from(formData.entries()).forEach(([key, value]) => {
+        console.log(key, value);
+      });
 
       await dispatch(createPet(formData));
-      navigate("/pets");
+      // navigate("/pets");
     } catch (error) {
       console.error("Error creating pet:", error);
     } finally {
@@ -90,36 +101,46 @@ export const PetForm = () => {
   };
 
   return (
-    <Paper sx={{ 
-      p: 4, 
-      maxWidth: 600, 
-      mx: "auto", 
-      mt: 4,
-      boxShadow: 3
-    }}>
-      <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
+    <Paper
+      sx={{
+        p: 4,
+        maxWidth: 600,
+        mx: "auto",
+        mt: 4,
+        boxShadow: 3,
+      }}
+    >
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        align="center"
+        sx={{ mb: 4 }}
+      >
         Добавить питомца
       </Typography>
-      
+
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Image Upload Section */}
-        <Box sx={{ 
-          display: "flex", 
-          flexDirection: "column", 
-          alignItems: "center", 
-          mb: 4 
-        }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            mb: 4,
+          }}
+        >
           <Avatar
             src={previewImage || undefined}
-            sx={{ 
-              width: 200, 
-              height: 200, 
-              bgcolor: previewImage ? 'transparent' : 'grey.200',
+            sx={{
+              width: 200,
+              height: 200,
+              bgcolor: previewImage ? "transparent" : "grey.200",
               mb: 2,
-              cursor: 'pointer',
-              '&:hover': {
-                opacity: 0.8
-              }
+              cursor: "pointer",
+              "&:hover": {
+                opacity: 0.8,
+              },
             }}
             variant="rounded"
             onClick={triggerFileInput}
@@ -130,15 +151,16 @@ export const PetForm = () => {
               </Typography>
             )}
           </Avatar>
-          
+
           <input
             type="file"
+            name="image"
             accept="image/*"
             hidden
             ref={fileInputRef}
             onChange={handleImageChange}
           />
-          
+
           <Button
             variant="outlined"
             onClick={triggerFileInput}
@@ -147,12 +169,12 @@ export const PetForm = () => {
           >
             Выбрать фото
           </Button>
-          
-          {errors.image && (
+
+          {/* {errors.image && (
             <Typography color="error" variant="caption">
               {errors.image?.message || "Фото обязательно"}
             </Typography>
-          )}
+          )} */}
         </Box>
 
         {/* Form Fields */}
@@ -162,12 +184,12 @@ export const PetForm = () => {
             fullWidth
             error={!!errors.name}
             helperText={errors.name?.message || " "}
-            {...register("name", { 
+            {...register("name", {
               required: "Обязательное поле",
               minLength: {
                 value: 2,
-                message: "Минимум 2 символа"
-              }
+                message: "Минимум 2 символа",
+              },
             })}
           />
 
@@ -194,32 +216,32 @@ export const PetForm = () => {
             fullWidth
             error={!!errors.breed}
             helperText={errors.breed?.message || " "}
-            {...register("breed", { 
+            {...register("breed", {
               required: "Обязательное поле",
               minLength: {
                 value: 2,
-                message: "Минимум 2 символа"
-              }
+                message: "Минимум 2 символа",
+              },
             })}
           />
 
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: "flex", gap: 2 }}>
             <TextField
               label="Возраст (лет)"
               type="number"
               fullWidth
               error={!!errors.age}
               helperText={errors.age?.message || " "}
-              {...register("age", { 
+              {...register("age", {
                 required: "Обязательное поле",
                 min: {
                   value: 0,
-                  message: "Возраст не может быть отрицательным"
+                  message: "Возраст не может быть отрицательным",
                 },
                 max: {
                   value: 30,
-                  message: "Введите реальный возраст"
-                }
+                  message: "Введите реальный возраст",
+                },
               })}
             />
 
@@ -229,12 +251,12 @@ export const PetForm = () => {
               fullWidth
               error={!!errors.price}
               helperText={errors.price?.message || " "}
-              {...register("price", { 
+              {...register("price", {
                 required: "Обязательное поле",
                 min: {
                   value: 0,
-                  message: "Цена не может быть отрицательной"
-                }
+                  message: "Цена не может быть отрицательной",
+                },
               })}
             />
           </Box>
@@ -246,27 +268,29 @@ export const PetForm = () => {
             fullWidth
             error={!!errors.description}
             helperText={errors.description?.message || " "}
-            {...register("description", { 
+            {...register("description", {
               required: "Обязательное поле",
               minLength: {
                 value: 10,
-                message: "Минимум 10 символов"
+                message: "Минимум 10 символов",
               },
               maxLength: {
                 value: 500,
-                message: "Максимум 500 символов"
-              }
+                message: "Максимум 500 символов",
+              },
             })}
           />
         </Stack>
 
         {/* Form Actions */}
-        <Box sx={{ 
-          mt: 4, 
-          display: "flex", 
-          justifyContent: "flex-end", 
-          gap: 2 
-        }}>
+        <Box
+          sx={{
+            mt: 4,
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: 2,
+          }}
+        >
           <Button
             variant="outlined"
             onClick={() => navigate("/pets")}

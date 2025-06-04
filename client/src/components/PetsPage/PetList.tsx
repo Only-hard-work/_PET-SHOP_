@@ -14,13 +14,15 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../stores/configureStore";
+import { EditPetModal } from "./EditPetModal/EditPetModal";
 
 interface PetListProps {
   pets: Pet[];
   isLoading?: boolean;
+  isProfilePage?: boolean;
 }
 
-export const PetList = ({ pets }: PetListProps) => {
+export const PetList = ({ pets, isProfilePage = false }: PetListProps) => {
   const theme = useTheme();
   const skeletonItems = Array(12).fill(null);
   const { isLoading } = useSelector((state: RootState) => state.pets);
@@ -36,19 +38,21 @@ export const PetList = ({ pets }: PetListProps) => {
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Typography
-        variant="h4"
-        component="h1"
-        align="center"
-        gutterBottom
-        sx={{
-          mb: 4,
-          fontWeight: 700,
-          color: theme.palette.primary.main,
-        }}
-      >
-        Найди своего чудесного питомца!
-      </Typography>
+      {!isProfilePage && (
+        <Typography
+          variant="h4"
+          component="h1"
+          align="center"
+          gutterBottom
+          sx={{
+            mb: 4,
+            fontWeight: 700,
+            color: theme.palette.primary.main,
+          }}
+        >
+          Найди своего чудесного питомца!
+        </Typography>
+      )}
 
       <Box
         display="flex"
@@ -140,6 +144,7 @@ export const PetList = ({ pets }: PetListProps) => {
           />
         </Box>
       )}
+      <EditPetModal />
     </Container>
   );
 };

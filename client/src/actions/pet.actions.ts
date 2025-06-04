@@ -41,3 +41,19 @@ export const createPet = (petData: FormData) => {
     }
   };
 };
+
+export const deletePet = (id: number) => {
+  return async (dispatch: AppDispatch) => {
+    dispatch({ type: PetActionTypes.CREATE_PET_REQUEST });
+
+    try {
+      await petService.deletePet(id);
+      dispatch({ type: PetActionTypes.REMOVE_PET_SUCCESS });
+    } catch (error) {
+      dispatch({
+        type: PetActionTypes.REMOVE_PET_FAILURE,
+        error: error.message,
+      });
+    }
+  };
+};

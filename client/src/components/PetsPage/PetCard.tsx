@@ -12,23 +12,30 @@ import {
   Divider,
   Rating,
   Skeleton,
-  Modal,
+  IconButton,
 } from "@mui/material";
 import PetsIcon from "@mui/icons-material/Pets";
 import CakeIcon from "@mui/icons-material/Cake";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { PetProfileModal } from "./PetProfileModal/PetProfileModal";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../../stores/configureStore";
+import { deletePet } from "../../actions/pet.actions";
+import { Delete, Edit } from "@mui/icons-material";
 
 interface PetCardProps {
   pet: Pet;
   isLoading?: boolean;
 }
 
-const PetCard: React.FC<PetCardProps> = ({
-  pet,
-  isLoading = false,
-}) => {
+const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
   const [isOpenedPetModal, setIsOpenedPetModal] = useState(false);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const isOwner = user.id === pet.ownerId;
+  const dispatch = useAppDispatch();
+
+  const handleDelete = (id: number) => {
+    dispatch(deletePet(id));
+  };
 
   if (isLoading) {
     return (
@@ -71,12 +78,66 @@ const PetCard: React.FC<PetCardProps> = ({
           display: "flex",
           flexDirection: "column",
           transition: "transform 0.3s",
+          position: "relative",
           "&:hover": {
             transform: "translateY(-5px)",
             boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
           },
         }}
       >
+        {isOwner && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              zIndex: 1,
+              display: "flex",
+              flexDirection: "column", // Располагаем иконки вертикально
+              gap: 0.5,
+              backgroundColor: "rgba(255, 255, 255, 0.95)",
+              borderRadius: "12px",
+              p: 0.5,
+              boxShadow: "0 1px 3px rgba(0,0,0,0.12)",
+              border: "1px solid rgba(0,0,0,0.05)",
+            }}
+          >
+            <IconButton
+              aria-label="edit"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              size="small"
+              sx={{
+                width: 32,
+                height: 32,
+                "&:hover": {
+                  backgroundColor: "rgba(25, 118, 210, 0.08)",
+                },
+              }}
+            >
+              <Edit fontSize="small" color="primary" />
+            </IconButton>
+
+            <IconButton
+              aria-label="delete"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(pet.id);
+              }}
+              size="small"
+              sx={{
+                width: 32,
+                height: 32,
+                "&:hover": {
+                  backgroundColor: "rgba(211, 47, 47, 0.08)",
+                },
+              }}
+            >
+              <Delete fontSize="small" color="error" />
+            </IconButton>
+          </Box>
+        )}
         <CardMedia
           component="img"
           height="240"
@@ -156,6 +217,7 @@ const PetCard: React.FC<PetCardProps> = ({
             )}
           </Box>
         </CardContent>
+        {!isOwner && (
           <Button
             variant="contained"
             sx={{
@@ -168,12 +230,13 @@ const PetCard: React.FC<PetCardProps> = ({
           >
             Хочу забрать
           </Button>
+        )}
       </Card>
-        <PetProfileModal
-          pet={pet}
-          isOpenedPetModal={isOpenedPetModal}
-          setIsOpenedPetModal={setIsOpenedPetModal}
-        />
+      <PetProfileModal
+        pet={pet}
+        isOpenedPetModal={isOpenedPetModal}
+        setIsOpenedPetModal={setIsOpenedPetModal}
+      />
     </>
   );
 };

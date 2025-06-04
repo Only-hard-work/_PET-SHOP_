@@ -44,7 +44,7 @@ User.init(
     },
     avatar: {
       type: DataTypes.STRING,
-      defaultValue: "default-avatar.jpg",
+      defaultValue: "../assets/imgs/default_pet_image.png",
     },
     phone: DataTypes.STRING,
     address: DataTypes.TEXT,

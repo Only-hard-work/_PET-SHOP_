@@ -1,7 +1,6 @@
 import { PetActionTypes } from "../constants/actionTypes";
 import petService from "../services/pet.service";
 import { AppDispatch } from "../stores/configureStore";
-import { Pet } from "../types";
 
 export const fetchPets = () => {
   return async (dispatch: AppDispatch) => {
@@ -44,15 +43,39 @@ export const createPet = (petData: FormData) => {
 
 export const deletePet = (id: number) => {
   return async (dispatch: AppDispatch) => {
-    dispatch({ type: PetActionTypes.CREATE_PET_REQUEST });
+    dispatch({ type: PetActionTypes.REMOVE_PET_REQUEST });
 
     try {
       await petService.deletePet(id);
-      dispatch({ type: PetActionTypes.REMOVE_PET_SUCCESS });
+      dispatch({
+        type: PetActionTypes.REMOVE_PET_SUCCESS,
+        payload: id,
+        isLoading: false,
+      });
     } catch (error) {
+      console.error("Error in deletePet:", error);
       dispatch({
         type: PetActionTypes.REMOVE_PET_FAILURE,
-        error: error.message,
+        payload: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  };
+};
+
+export const updatePet = (petData: FormData) => {
+  return async (dispatch: AppDispatch) => {
+    dispatch({ type: PetActionTypes.UPDATE_PET_REQUEST });
+
+    try {
+      const pet = await petService.updatePet(petData);
+      dispatch({
+        type: PetActionTypes.UPDATE_PET_SUCCESS,
+        payload: pet,
+      });
+    } catch (error) {
+      dispatch({
+        type: PetActionTypes.UPDATE_PET_FAILURE,
+        payload: error.message,
       });
     }
   };

@@ -4,7 +4,7 @@ import LoginForm from "./components/LoginPage";
 import RegisterForm from "./components/RegisterPage";
 import PetsPage from "./components/PetsPage";
 import { UserProfile } from "./components/UserProfilePage/UserProfile";
-import { PetForm } from "./components/PetsPage/AddPetsForm/PetForm";
+import { PetForm } from "./components/PetsPage/AddPetForm/PetForm";
 
 function App() {
   return (

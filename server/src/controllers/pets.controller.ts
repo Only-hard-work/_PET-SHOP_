@@ -14,28 +14,10 @@ export default {
     }
   },
 
-  // Получить питомца по ID
-  async getPetById(req: Request, res: Response) {
-    try {
-      const pet = await Pet.findByPk(req.params.id);
-      if (!pet) {
-        return res.status(404).json({ message: "Pet not found" });
-      }
-      res.json(pet);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching pet", error });
-    }
-  },
-
   async createPet(req: Request, res: Response) {
     try {
       const { name, breed, age, price, description, ownerId, type } = req.body;
-      const imageFile = req.file;
-      let imageUrl = null;
-
-      if (imageFile) {
-        imageUrl = await ImageService.uploadImage(imageFile);
-      }
+      const imageUrl = await ImageService.getImageUrl(req.file);
 
       const pet = await Pet.create({
         name,
@@ -43,7 +25,7 @@ export default {
         age: Number(age),
         price: Number(price),
         description,
-        image: imageUrl || "",
+        image: imageUrl,
         ownerId: ownerId ? Number(ownerId) : null,
         type,
         createdAt: new Date(),
@@ -57,25 +39,45 @@ export default {
     }
   },
 
-  async updatePet(req: Request, res: Response) {
+  async updatePet(req: Request, res: Response): Promise<void> {
     try {
-      const pet = await Pet.findByPk(req.params.id);
+      const { name, breed, age, price, description, ownerId, type, image, id } =
+        req.body;
+
+      const imageUrl = req.file
+        ? await ImageService.getImageUrl(req.file)
+        : image;
+
+      const pet = await Pet.findByPk(id);
+
       if (!pet) {
-        return res.status(404).json({ message: "Pet not found" });
+        res.status(404).json({ message: "Pet not found" });
+        return;
       }
 
-      const updatedPet = await pet.update(req.body);
-      res.json(updatedPet);
+      await pet.update({
+        name,
+        breed,
+        age: age ? Number(age) : undefined,
+        price: price ? Number(price) : undefined,
+        description,
+        image: imageUrl,
+        ownerId: ownerId ? Number(ownerId) : null,
+        type,
+        updatedAt: new Date(),
+      });
+
+      res.json(pet);
     } catch (error) {
+      console.error("Error updating pet:", error);
       res.status(500).json({ message: "Error updating pet", error });
     }
   },
 
   async deletePet(req: Request, res: Response) {
     try {
-      const petId = req.params.id; // Get ID from URL params
+      const petId = req.params.id;
 
-      // Validate ID
       if (!petId || isNaN(Number(petId))) {
         res.status(400).json({ message: "Invalid pet ID" });
       }
@@ -85,6 +87,7 @@ export default {
       if (!pet) {
         res.status(404).json({ message: "Pet not found" });
       } else await pet.destroy();
+      res.status(200).json({ message: `Pet with id ${petId} removed!` });
     } catch (error) {
       res.status(500).json({ message: "Error deleting pet", error });
     }

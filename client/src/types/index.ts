@@ -8,13 +8,12 @@ export interface Pet {
   description: string;
   image: string;
   rating?: number;
-  favorites?: Pet[];
   ownerId?: number;
 }
 
 export interface PetsState {
   items: Pet[];
-  favorites: number[]; // массив ID избранных питомцев
+  favorites: number[];
   isLoading: boolean;
   error: string | null;
 }

@@ -70,9 +70,6 @@ export const PetForm = () => {
     try {
       const formData = new FormData();
 
-      console.log("data", data);
-
-      // Добавляем все поля как строки
       formData.append("name", data.name);
       formData.append("type", data.type);
       formData.append("breed", data.breed);
@@ -81,15 +78,9 @@ export const PetForm = () => {
       formData.append("description", data.description);
       formData.append("ownerId", user.id.toString());
 
-      console.log(selectedFile);
-
       if (selectedFile) {
         formData.append("image", selectedFile);
       }
-
-      Array.from(formData.entries()).forEach(([key, value]) => {
-        console.log(key, value);
-      });
 
       await dispatch(createPet(formData));
       // navigate("/pets");
@@ -121,12 +112,12 @@ export const PetForm = () => {
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Image Upload Section */}
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            justifyContent: "center",
             mb: 4,
           }}
         >
@@ -169,15 +160,8 @@ export const PetForm = () => {
           >
             Выбрать фото
           </Button>
-
-          {/* {errors.image && (
-            <Typography color="error" variant="caption">
-              {errors.image?.message || "Фото обязательно"}
-            </Typography>
-          )} */}
         </Box>
 
-        {/* Form Fields */}
         <Stack spacing={3}>
           <TextField
             label="Имя питомца"
@@ -246,7 +230,7 @@ export const PetForm = () => {
             />
 
             <TextField
-              label="Цена (₽)"
+              label="Цена ($)"
               type="number"
               fullWidth
               error={!!errors.price}
@@ -281,8 +265,6 @@ export const PetForm = () => {
             })}
           />
         </Stack>
-
-        {/* Form Actions */}
         <Box
           sx={{
             mt: 4,
@@ -293,7 +275,7 @@ export const PetForm = () => {
         >
           <Button
             variant="outlined"
-            onClick={() => navigate("/pets")}
+            onClick={() => navigate(`/profile/${user.id}`)}
             disabled={isSubmitting}
           >
             Отмена

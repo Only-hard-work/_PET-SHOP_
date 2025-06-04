@@ -1,6 +1,5 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/database";
-import User from "./user.model";
 
 class Pet extends Model {
   public id!: number;

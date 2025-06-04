@@ -49,7 +49,7 @@ class AuthContoller {
             phone: user.phone,
             avatar: user.avatar,
             address: user.address,
-            pets: await user.getPets() || [],
+            pets: (await user.getPets()) || [],
           },
         });
       }
@@ -57,19 +57,6 @@ class AuthContoller {
       res.status(500).json({ message: "Login failed" });
     }
   }
-
-  //   static async getMe(req: Request, res: Response) {
-  //     try {
-  //       console.log(req);
-  //       const user = User.findByPk(req.user.id, {
-  //         attributes: { exclude: ["password"] },
-  //       });
-
-  //       res.json(user);
-  //     } catch (error) {
-  //       res.status(500).json({ message: "Failed to fetch user!", error });
-  //     }
-  //   }
 }
 
 export default AuthContoller;

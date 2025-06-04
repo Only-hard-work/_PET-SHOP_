@@ -10,14 +10,7 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
-import {
-  Edit,
-  Add,
-  Pets,
-  Phone,
-  Email,
-  Home,
-} from "@mui/icons-material";
+import { Edit, Add, Pets, Phone, Email, Home } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../stores/configureStore";
 import { PetList } from "../PetsPage/PetList";
@@ -28,8 +21,6 @@ export const UserProfile = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const data = useSelector((state: RootState) => state.pets.items);
   const navigate = useNavigate();
-
-  console.log(data);
 
   return (
     <Box sx={{ p: { xs: 2, md: 3 } }}>
@@ -53,7 +44,10 @@ export const UserProfile = () => {
           }}
         >
           <Avatar
-            src={user?.avatar || '../../../../server/src/assets/imgs/default_pet_image.png'}
+            src={
+              user?.avatar ||
+              "../../../../server/src/assets/imgs/default_pet_image.png"
+            }
             sx={{
               width: 150,
               height: 150,
@@ -121,14 +115,17 @@ export const UserProfile = () => {
             variant="contained"
             startIcon={<Add />}
             sx={{ borderRadius: 5 }}
-            onClick={() => navigate('/pets/new')}
+            onClick={() => navigate("/pets/new")}
           >
             Добавить питомца
           </Button>
         </Box>
 
         {data?.length ? (
-          <PetList pets={data.filter((pet: Pet) => pet.ownerId === user.id)} isProfilePage />
+          <PetList
+            pets={data.filter((pet: Pet) => pet.ownerId === user.id)}
+            isProfilePage
+          />
         ) : (
           <Paper sx={{ p: 4, textAlign: "center", borderRadius: 3 }}>
             <Pets sx={{ fontSize: 60, color: "text.disabled", mb: 2 }} />

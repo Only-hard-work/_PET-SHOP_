@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../stores/configureStore";
-import { EditPetModal } from "./EditPetModal/EditPetModal";
 
 interface PetListProps {
   pets: Pet[];
@@ -27,7 +26,6 @@ export const PetList = ({ pets, isProfilePage = false }: PetListProps) => {
   const skeletonItems = Array(12).fill(null);
   const { isLoading } = useSelector((state: RootState) => state.pets);
 
-  // Pagination
   const [page, setPage] = useState(1);
   const itemsPerPage = 8;
   const totalPages = Math.ceil(pets.length / itemsPerPage);
@@ -144,7 +142,6 @@ export const PetList = ({ pets, isProfilePage = false }: PetListProps) => {
           />
         </Box>
       )}
-      <EditPetModal />
     </Container>
   );
 };

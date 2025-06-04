@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { fetchPets } from "../../actions/pet.actions";
 import ErrorMessage from "../common/ErrorMessage";
@@ -34,15 +34,17 @@ const PetsPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { token, user } = useSelector((state: RootState) => state.auth);
-  const { items: pets, error } = useSelector((state: RootState) => state.pets);
+  const { items: pets, error } = useSelector((state: RootState) => {
+    return state.pets;
+  });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    dispatch(fetchPets());
-  }, [dispatch]);
-
-  if (error) return <ErrorMessage message={error} />;
+  const filteredPets = pets.filter(
+    (pet: Pet) =>
+      pet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      pet.breed.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const getInitials = (name?: string) => {
     if (!name) return "?";
@@ -67,11 +69,11 @@ const PetsPage: React.FC = () => {
     window.location.reload();
   };
 
-  const filteredPets = pets.filter(
-    (pet: Pet) =>
-      pet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      pet.breed.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    dispatch(fetchPets());
+  }, [dispatch]);
+
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: theme.palette.background.default }}>
@@ -194,7 +196,6 @@ const PetsPage: React.FC = () => {
           </Toolbar>
         </Container>
       </AppBar>
-      {/* User Menu */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -233,7 +234,6 @@ const PetsPage: React.FC = () => {
         </MenuItem>
       </Menu>
 
-      {/* Main Content */}
       <Box sx={{ pt: 10 }}>
         <PetList pets={filteredPets} />
       </Box>

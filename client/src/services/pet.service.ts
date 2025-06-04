@@ -30,17 +30,22 @@ class PetService {
   }
 
   async deletePet(id: number) {
-    try {
-      const response = await axios.delete(`${API_URL}/delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error deleting pet:", error);
-      throw error;
-    }
+    const response = await axios.delete(`${API_URL}/delete/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.data;
+  }
+
+  async updatePet(petData: FormData): Promise<Pet> {
+    const response = await axios.post(`${API_URL}/update`, petData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
   }
 }
 

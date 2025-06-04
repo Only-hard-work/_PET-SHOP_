@@ -21,21 +21,19 @@ const PERSISTS_CONFIGS = {
     key: "auth",
     storage,
   },
-  petsPersistConfig: {
-    key: "pets",
-    storage,
-  }
-}
+};
 
-const persistedAuthReducer = persistReducer(PERSISTS_CONFIGS.authPersistConfig, authReducer);
-const persistedPetsReducer = persistReducer(PERSISTS_CONFIGS.petsPersistConfig, petsReducer);
+const persistedAuthReducer = persistReducer(
+  PERSISTS_CONFIGS.authPersistConfig,
+  authReducer
+);
 
 export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
     cart: cartReduer,
+    pets: petsReducer,
     pet: petReducer,
-    pets: persistedPetsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

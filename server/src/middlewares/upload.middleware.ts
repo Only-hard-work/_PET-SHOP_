@@ -15,7 +15,6 @@ const storage = multer.memoryStorage();
 //   }
 // };
 
-console.log('store', storage);
 
 export const uploadPetImage = multer({
   storage,

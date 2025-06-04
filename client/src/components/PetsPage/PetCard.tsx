@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import { Pet } from "../../types";
 import {
   Card,
@@ -21,6 +21,7 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../stores/configureStore";
 import { deletePet } from "../../actions/pet.actions";
 import { Delete, Edit } from "@mui/icons-material";
+import { PetEditModal } from "./EditPetModal/EditPetModal";
 
 interface PetCardProps {
   pet: Pet;
@@ -29,12 +30,24 @@ interface PetCardProps {
 
 const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
   const [isOpenedPetModal, setIsOpenedPetModal] = useState(false);
+  const [isOpenedEditModal, setIsOpenedEditModal] = useState(false);
   const { user } = useSelector((state: RootState) => state.auth);
-  const isOwner = user.id === pet.ownerId;
+  const updatedPet = useSelector((state: RootState) => {
+    return state.pet.pet;
+  });
+  const currentPet =
+    updatedPet.name != "" && updatedPet.id == pet.id ? updatedPet : pet;
+  const isOwner = user.id === currentPet.ownerId;
   const dispatch = useAppDispatch();
 
-  const handleDelete = (id: number) => {
-    dispatch(deletePet(id));
+  const handleDelete = async (id: number) => {
+    if (window.confirm("Вы уверены, что хотите удалить это животное?")) {
+      try {
+        await dispatch(deletePet(id));
+      } catch (error) {
+        console.error("Ошибка при удалении:", error);
+      }
+    }
   };
 
   if (isLoading) {
@@ -93,7 +106,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
               right: 8,
               zIndex: 1,
               display: "flex",
-              flexDirection: "column", // Располагаем иконки вертикально
+              flexDirection: "column",
               gap: 0.5,
               backgroundColor: "rgba(255, 255, 255, 0.95)",
               borderRadius: "12px",
@@ -115,6 +128,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
                   backgroundColor: "rgba(25, 118, 210, 0.08)",
                 },
               }}
+              onClickCapture={() => setIsOpenedEditModal(true)}
             >
               <Edit fontSize="small" color="primary" />
             </IconButton>
@@ -141,8 +155,8 @@ const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
         <CardMedia
           component="img"
           height="240"
-          image={pet.image}
-          alt={pet.name}
+          image={currentPet.image}
+          alt={currentPet.name}
           sx={{ objectFit: "cover" }}
           onClick={() => setIsOpenedPetModal(true)}
         />
@@ -161,20 +175,19 @@ const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
               component="div"
               sx={{ fontWeight: 600 }}
             >
-              {pet.name}
+              {currentPet.name}
             </Typography>
             <Chip
-              label={pet.type}
-              color={pet.type === "dog" ? "primary" : "secondary"}
+              label={currentPet.type === "dog" ? "собака" : "кошка"}
+              color={currentPet.type === "dog" ? "primary" : "secondary"}
               size="small"
               icon={<PetsIcon fontSize="small" />}
             />
           </Stack>
-
           <Stack direction="row" spacing={1} sx={{ my: 1 }}>
-            <Chip label={pet.breed} variant="outlined" size="small" />
+            <Chip label={currentPet.breed} variant="outlined" size="small" />
             <Chip
-              label={`${pet.age} yrs`}
+              label={`${currentPet.age} yrs`}
               icon={<CakeIcon fontSize="small" />}
               size="small"
             />
@@ -191,7 +204,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
               overflow: "hidden",
             }}
           >
-            {pet.description}
+            {currentPet.description}
           </Typography>
 
           <Divider sx={{ my: 2 }} />
@@ -204,12 +217,12 @@ const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
             }}
           >
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              {`$ ${pet.price.toLocaleString()}`}
+              {`$ ${currentPet.price.toLocaleString()}`}
             </Typography>
 
-            {pet.rating && (
+            {currentPet.rating && (
               <Rating
-                value={pet.rating}
+                value={currentPet.rating}
                 precision={0.5}
                 readOnly
                 size="small"
@@ -236,6 +249,11 @@ const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
         pet={pet}
         isOpenedPetModal={isOpenedPetModal}
         setIsOpenedPetModal={setIsOpenedPetModal}
+      />
+      <PetEditModal
+        open={isOpenedEditModal}
+        onClose={() => setIsOpenedEditModal(false)}
+        pet={currentPet}
       />
     </>
   );

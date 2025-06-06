@@ -34,8 +34,6 @@ export const PetForm = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    setValue,
-    watch,
   } = useForm<PetFormData>({ mode: "onChange" });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -101,13 +99,7 @@ export const PetForm = () => {
         boxShadow: 3,
       }}
     >
-      <Typography
-        variant="h4"
-        component="h1"
-        gutterBottom
-        align="center"
-        sx={{ mb: 4 }}
-      >
+      <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
         Добавить питомца
       </Typography>
 
@@ -152,12 +144,7 @@ export const PetForm = () => {
             onChange={handleImageChange}
           />
 
-          <Button
-            variant="outlined"
-            onClick={triggerFileInput}
-            color="secondary"
-            sx={{ mb: 1 }}
-          >
+          <Button variant="outlined" onClick={triggerFileInput} color="secondary" sx={{ mb: 1 }}>
             Выбрать фото
           </Button>
         </Box>

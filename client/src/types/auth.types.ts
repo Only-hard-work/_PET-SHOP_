@@ -1,4 +1,4 @@
-import { Pet } from '../types/index';
+import { Pet } from "../types/index";
 
 export interface UserRegisterData {
   username: string;

@@ -48,7 +48,7 @@ Pet.init(
       allowNull: false,
     },
   },
-  { sequelize, modelName: "pet" }
+  { sequelize, modelName: "pet" },
 );
 
 export default Pet;

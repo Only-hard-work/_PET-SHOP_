@@ -3,9 +3,7 @@ import FormData from "form-data";
 import { IMGBB_CONFIG } from "../utils/imgbb";
 
 export class ImageService {
-  private static async uploadImage(
-    imageFile: Express.Multer.File
-  ): Promise<string> {
+  private static async uploadImage(imageFile: Express.Multer.File): Promise<string> {
     try {
       const formData = new FormData();
 
@@ -32,25 +30,23 @@ export class ImageService {
       }
 
       return response.data.data.url;
-    } catch (error: any) {
-      console.error("ImgBB Upload Error:", {
-        message: error.message,
-        response: error.response?.data,
-        stack: error.stack,
-      });
-      throw new Error(`Failed to upload image: ${error.message}`);
+    } catch (error) {
+      console.error("ImgBB Upload Error:", { message: error });
+      return "";
     }
   }
 
-  static async getImageUrl(
-    imageFile: Express.Multer.File | undefined
-  ): Promise<string | string> {
+  static async getImageUrl(imageFile: Express.Multer.File | undefined): Promise<string | string> {
     let imageUrl = "";
 
     if (imageFile) {
       imageUrl = await this.uploadImage(imageFile);
     }
 
-    return imageUrl;
+    if (imageUrl.length > 0) {
+      return imageUrl;
+    }
+
+    return "";
   }
 }

@@ -34,8 +34,6 @@ export default function petReducer(state = initialState, action: any) {
       };
     case PetActionTypes.UPDATE_PET_FAILURE:
       return { ...state, error: action.payload, isLoading: false };
-    case PetActionTypes.FETCH_PETS_FAILURE:
-      return { ...state, isLoading: false, error: action.payload };
     default:
       return state;
   }

@@ -67,11 +67,7 @@ export const PetList = ({ pets, isProfilePage = false }: PetListProps) => {
         }}
       >
         {paginatedPets.map((item, index) => (
-          <Grow
-            in
-            timeout={(index + 1) * 200}
-            key={isLoading ? `skeleton-${index}` : item.id}
-          >
+          <Grow in timeout={(index + 1) * 200} key={isLoading ? `skeleton-${index}` : item.id}>
             <Paper
               elevation={2}
               sx={{
@@ -98,11 +94,7 @@ export const PetList = ({ pets, isProfilePage = false }: PetListProps) => {
                     <Skeleton width="60%" height={32} />
                     <Skeleton width="40%" height={24} />
                     <Skeleton width="30%" height={28} sx={{ mt: 2 }} />
-                    <Skeleton
-                      width="100%"
-                      height={36}
-                      sx={{ mt: 2, borderRadius: 1 }}
-                    />
+                    <Skeleton width="100%" height={36} sx={{ mt: 2, borderRadius: 1 }} />
                   </Box>
                 </>
               ) : (

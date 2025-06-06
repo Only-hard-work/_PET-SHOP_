@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { register } from '../../actions/auth.actions';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
-import { useAppDispatch } from '../../stores/configureStore';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { register } from "../../actions/auth.actions";
+import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { useAppDispatch } from "../../stores/configureStore";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm: React.FC = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: ''
+    username: "",
+    email: "",
+    password: "",
   });
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const RegisterForm: React.FC = () => {
     e.preventDefault();
     try {
       await dispatch(register(formData));
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
       // todo need to do
     }
@@ -36,7 +36,7 @@ const RegisterForm: React.FC = () => {
             fullWidth
             margin="normal"
             value={formData.username}
-            onChange={(e) => setFormData({...formData, username: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
           />
           <TextField
             label="Email"
@@ -45,7 +45,7 @@ const RegisterForm: React.FC = () => {
             fullWidth
             margin="normal"
             value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
           <TextField
             label="Password"
@@ -54,7 +54,7 @@ const RegisterForm: React.FC = () => {
             fullWidth
             margin="normal"
             value={formData.password}
-            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           />
           <Button
             type="submit"

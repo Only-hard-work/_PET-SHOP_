@@ -14,10 +14,7 @@ const initialState: AuthState = {
   error: null,
 };
 
-export default function authReducer(
-  state = initialState,
-  action: any
-): AuthState {
+export default function authReducer(state = initialState, action: any): AuthState {
   switch (action.type) {
     case AuthActionTypes.REGISTER_REQUEST:
     case AuthActionTypes.LOGIN_REQUEST:

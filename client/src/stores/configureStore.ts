@@ -15,25 +15,31 @@ import cartReduer from "../reducers/cart.reducer";
 import petReducer from "../reducers/pet.reducer";
 import petsReducer from "../reducers/pets.reducer";
 import { useDispatch } from "react-redux";
+import userReducer from "../reducers/user.reducer";
 
 const PERSISTS_CONFIGS = {
   authPersistConfig: {
     key: "auth",
     storage,
   },
+  petsPersistConfig: {
+    key: "pets",
+    storage,
+    whitelist: ["favorites"],
+  },
 };
 
-const persistedAuthReducer = persistReducer(
-  PERSISTS_CONFIGS.authPersistConfig,
-  authReducer
-);
+const persistedAuthReducer = persistReducer(PERSISTS_CONFIGS.authPersistConfig, authReducer);
+
+const persistedPetsReducer = persistReducer(PERSISTS_CONFIGS.petsPersistConfig, petsReducer);
 
 export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
     cart: cartReduer,
-    pets: petsReducer,
+    pets: persistedPetsReducer,
     pet: petReducer,
+    user: userReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

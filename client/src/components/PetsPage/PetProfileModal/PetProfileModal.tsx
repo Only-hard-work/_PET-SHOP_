@@ -1,19 +1,37 @@
-import { Box, Button, CardMedia, Chip, Divider, Modal, Rating, Stack, Typography } from "@mui/material";
+import React from "react";
+import {
+  Box,
+  Button,
+  CardMedia,
+  Chip,
+  Divider,
+  Modal,
+  Rating,
+  Stack,
+  Typography,
+} from "@mui/material";
 import PetsIcon from "@mui/icons-material/Pets";
 import CakeIcon from "@mui/icons-material/Cake";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { Pet } from "../../../types";
+import { FavoriteBorderTwoTone } from "@mui/icons-material";
 
-interface petProfileProps {
+interface PetProfileProps {
   isOpenedPetModal: boolean;
   setIsOpenedPetModal: React.Dispatch<React.SetStateAction<boolean>>;
   pet: Pet;
+  isOwner: boolean;
+  isFavorite: boolean;
+  handleFavoritesClick: (e: React.MouseEvent<Element, MouseEvent>) => void;
 }
 
-export const PetProfileModal: React.FC<petProfileProps> = ({
+export const PetProfileModal: React.FC<PetProfileProps> = ({
   isOpenedPetModal,
   setIsOpenedPetModal,
   pet,
+  isOwner,
+  isFavorite,
+  handleFavoritesClick,
 }) => {
   return (
     <Modal
@@ -68,16 +86,9 @@ export const PetProfileModal: React.FC<petProfileProps> = ({
           </Box>
 
           <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+            <Chip label={pet.breed} variant="outlined" color="info" size="medium" />
             <Chip
-              label={pet.breed}
-              variant="outlined"
-              color="info"
-              size="medium"
-            />
-            <Chip
-              label={`${pet.age} ${
-                pet.age === 1 ? "год" : pet.age < 5 ? "года" : "лет"
-              }`}
+              label={`${pet.age} ${pet.age === 1 ? "год" : pet.age < 5 ? "года" : "лет"}`}
               icon={<CakeIcon />}
               size="medium"
             />
@@ -102,32 +113,30 @@ export const PetProfileModal: React.FC<petProfileProps> = ({
               </Box>
               {pet.rating && (
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Rating
-                    value={pet.rating}
-                    precision={0.5}
-                    readOnly
-                    sx={{ mr: 1 }}
-                  />
+                  <Rating value={pet.rating} precision={0.5} readOnly sx={{ mr: 1 }} />
                   <Typography>Рейтинг: {pet.rating.toFixed(1)}</Typography>
                 </Box>
               )}
             </Stack>
           </Box>
 
-          <Button
-            variant="contained"
-            fullWidth
-            size="large"
-            sx={{
-              py: 1.5,
-              fontWeight: 600,
-              fontSize: "1.1rem",
-              borderRadius: 1,
-            }}
-            startIcon={<PetsIcon />}
-          >
-            Хочу забрать!
-          </Button>
+          {!isOwner && (
+            <Button
+              variant={isFavorite ? "outlined" : "contained"}
+              fullWidth
+              sx={{
+                py: 1.5,
+                fontWeight: 600,
+                textTransform: "none",
+                fontSize: "1.1rem",
+                borderRadius: 1,
+              }}
+              startIcon={isFavorite ? <FavoriteBorderTwoTone /> : <PetsIcon />}
+              onClick={handleFavoritesClick}
+            >
+              {isFavorite ? "В избранном" : "Хочу забрать"}
+            </Button>
+          )}
         </Box>
       </Box>
     </Modal>

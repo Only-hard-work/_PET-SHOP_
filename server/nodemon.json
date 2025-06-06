@@ -1,5 +1,9 @@
 {
   "watch": ["src"],
-  "ext": "ts",
-  "exec": "ts-node ./src/app.ts"
+  "ext": "ts,json,env",
+  "ignore": ["src/**/*.spec.ts", "src/**/*.test.ts", "dist"],
+  "exec": "ts-node --files --transpile-only src/app.ts",
+  "env": {
+    "NODE_ENV": "development"
+  }
 }

@@ -1,5 +1,4 @@
 import multer from "multer";
-import { Request } from "express";
 
 const storage = multer.memoryStorage();
 
@@ -15,8 +14,7 @@ const storage = multer.memoryStorage();
 //   }
 // };
 
-
 export const uploadPetImage = multer({
   storage,
   limits: { fieldSize: 5 * 1024 * 1024 }, // limit 5mb
-}).single('image');
+}).single("image");

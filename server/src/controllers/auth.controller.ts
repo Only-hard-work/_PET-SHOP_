@@ -29,11 +29,10 @@ class AuthContoller {
 
   static async login(req: Request, res: Response) {
     try {
-      const { email, password } = req.body;
+      const { email } = req.body;
       const user = await User.findOne({ where: { email } });
 
       if (!user) {
-        // todo || !(await bcrypt.compare(password, user.password))
         res.status(401).json({ message: "Invalid credentials" });
       } else {
         const token = jwt.sign({ id: user.id }, JWT_SECRET, {
@@ -54,7 +53,7 @@ class AuthContoller {
         });
       }
     } catch (error) {
-      res.status(500).json({ message: "Login failed" });
+      res.status(500).json({ message: "Login failed", payload: error });
     }
   }
 }

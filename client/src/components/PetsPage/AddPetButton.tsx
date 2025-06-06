@@ -1,6 +1,6 @@
-import { Fab } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import { useNavigate } from 'react-router-dom';
+import { Fab } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { useNavigate } from "react-router-dom";
 
 export const AddPetButton = () => {
   const navigate = useNavigate();
@@ -10,12 +10,12 @@ export const AddPetButton = () => {
       color="primary"
       aria-label="add"
       sx={{
-        position: 'fixed',
+        position: "fixed",
         bottom: 32,
         right: 32,
-        zIndex: 1000
+        zIndex: 1000,
       }}
-      onClick={() => navigate('/pets/new')}
+      onClick={() => navigate("/pets/new")}
     >
       <AddIcon />
     </Fab>

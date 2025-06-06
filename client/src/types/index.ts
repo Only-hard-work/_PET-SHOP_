@@ -1,7 +1,7 @@
 export interface Pet {
   id: number;
   name: string;
-  type: 'dog' | 'cat';
+  type: "dog" | "cat";
   breed: string;
   age: number;
   price: number;
@@ -13,7 +13,7 @@ export interface Pet {
 
 export interface PetsState {
   items: Pet[];
-  favorites: number[];
+  favorites: Pet[];
   isLoading: boolean;
   error: string | null;
 }

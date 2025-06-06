@@ -1,4 +1,9 @@
-import { DataTypes, HasManyAddAssociationMixin, HasManyGetAssociationsMixin, Model } from "sequelize";
+import {
+  DataTypes,
+  HasManyAddAssociationMixin,
+  HasManyGetAssociationsMixin,
+  Model,
+} from "sequelize";
 import sequelize from "../config/database";
 import Pet from "./pet.model";
 
@@ -52,10 +57,10 @@ User.init(
   {
     sequelize,
     modelName: "user",
-  }
+  },
 );
 
-User.hasMany(Pet, { foreignKey: 'ownerId' });
-Pet.belongsTo(User, { foreignKey: 'ownerId' });
+User.hasMany(Pet, { foreignKey: "ownerId" });
+Pet.belongsTo(User, { foreignKey: "ownerId" });
 
 export default User;

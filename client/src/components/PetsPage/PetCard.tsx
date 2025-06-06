@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useState } from "react";
 import { Pet } from "../../types";
 import {
   Card,
@@ -19,8 +19,8 @@ import CakeIcon from "@mui/icons-material/Cake";
 import { PetProfileModal } from "./PetProfileModal/PetProfileModal";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../stores/configureStore";
-import { deletePet } from "../../actions/pet.actions";
-import { Delete, Edit } from "@mui/icons-material";
+import { addToFavorites, deletePet, removeFromFavorites } from "../../actions/pet.actions";
+import { Delete, Edit, FavoriteBorderTwoTone } from "@mui/icons-material";
 import { PetEditModal } from "./EditPetModal/EditPetModal";
 
 interface PetCardProps {
@@ -32,11 +32,12 @@ const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
   const [isOpenedPetModal, setIsOpenedPetModal] = useState(false);
   const [isOpenedEditModal, setIsOpenedEditModal] = useState(false);
   const { user } = useSelector((state: RootState) => state.auth);
+  const { favorites } = useSelector((state: RootState) => state.pets);
+  const isFavorite = favorites.some((fPet) => fPet.id === pet.id);
   const updatedPet = useSelector((state: RootState) => {
     return state.pet.pet;
   });
-  const currentPet =
-    updatedPet.name != "" && updatedPet.id == pet.id ? updatedPet : pet;
+  const currentPet = updatedPet.name !== "" && updatedPet.id === pet.id ? updatedPet : pet;
   const isOwner = user.id === currentPet.ownerId;
   const dispatch = useAppDispatch();
 
@@ -50,6 +51,15 @@ const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
     }
   };
 
+  const handleFavoritesClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isFavorite) {
+      dispatch(removeFromFavorites(pet.id));
+    } else {
+      dispatch(addToFavorites(pet));
+    }
+  };
+
   if (isLoading) {
     return (
       <Card
@@ -60,12 +70,7 @@ const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
           flexDirection: "column",
         }}
       >
-        <Skeleton
-          variant="rectangular"
-          width="100%"
-          height={240}
-          sx={{ bgcolor: "grey.200" }}
-        />
+        <Skeleton variant="rectangular" width="100%" height={240} sx={{ bgcolor: "grey.200" }} />
         <CardContent sx={{ flexGrow: 1 }}>
           <Skeleton width="60%" height={32} />
           <Stack direction="row" spacing={1} sx={{ my: 1 }}>
@@ -160,21 +165,9 @@ const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
           sx={{ objectFit: "cover" }}
           onClick={() => setIsOpenedPetModal(true)}
         />
-        <CardContent
-          sx={{ flexGrow: 1 }}
-          onClick={() => setIsOpenedPetModal(true)}
-        >
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              sx={{ fontWeight: 600 }}
-            >
+        <CardContent sx={{ flexGrow: 1 }} onClick={() => setIsOpenedPetModal(true)}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Typography gutterBottom variant="h5" component="div" sx={{ fontWeight: 600 }}>
               {currentPet.name}
             </Typography>
             <Chip
@@ -221,34 +214,34 @@ const PetCard: React.FC<PetCardProps> = ({ pet, isLoading = false }) => {
             </Typography>
 
             {currentPet.rating && (
-              <Rating
-                value={currentPet.rating}
-                precision={0.5}
-                readOnly
-                size="small"
-              />
+              <Rating value={currentPet.rating} precision={0.5} readOnly size="small" />
             )}
           </Box>
         </CardContent>
         {!isOwner && (
           <Button
-            variant="contained"
+            variant={isFavorite ? "outlined" : "contained"}
             sx={{
-              mt: 2,
+              m: [1, 1, 1, 1],
               p: 1,
               fontWeight: 600,
               textTransform: "none",
             }}
-            startIcon={<PetsIcon />}
+            startIcon={isFavorite ? <FavoriteBorderTwoTone /> : <PetsIcon />}
+            onClick={handleFavoritesClick}
           >
-            Хочу забрать
+            {isFavorite ? "В избранном" : "Хочу забрать"}
           </Button>
         )}
       </Card>
+      {console.log(favorites)}
       <PetProfileModal
         pet={pet}
         isOpenedPetModal={isOpenedPetModal}
         setIsOpenedPetModal={setIsOpenedPetModal}
+        isOwner={isOwner}
+        isFavorite={isFavorite}
+        handleFavoritesClick={handleFavoritesClick}
       />
       <PetEditModal
         open={isOpenedEditModal}

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { fetchPets } from "../../actions/pet.actions";
 import ErrorMessage from "../common/ErrorMessage";
@@ -15,35 +15,41 @@ import {
   Menu,
   MenuItem,
   useTheme,
-  Fade,
   Button,
   InputBase,
   alpha,
-  Grid,
+  Stack,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { Favorite } from "@mui/icons-material";
 import "./styles/pets.styles.css";
 import { Pet } from "../../types";
+import { FavoritesList } from "./FavoritesPetsList/FavoriteList";
 
 const PetsPage: React.FC = () => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { token, user } = useSelector((state: RootState) => state.auth);
-  const { items: pets, error } = useSelector((state: RootState) => {
+  const {
+    items: pets,
+    error,
+    favorites,
+  } = useSelector((state: RootState) => {
     return state.pets;
   });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showFavorites, setShowFavorites] = useState(false);
 
   const filteredPets = pets.filter(
     (pet: Pet) =>
       pet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      pet.breed.toLowerCase().includes(searchQuery.toLowerCase())
+      pet.breed.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const getInitials = (name?: string) => {
@@ -160,10 +166,7 @@ const PetsPage: React.FC = () => {
                       p: 0.5,
                       border: `2px solid ${theme.palette.primary.main}`,
                       "&:hover": {
-                        backgroundColor: alpha(
-                          theme.palette.primary.main,
-                          0.04
-                        ),
+                        backgroundColor: alpha(theme.palette.primary.main, 0.04),
                       },
                     }}
                   >
@@ -235,7 +238,29 @@ const PetsPage: React.FC = () => {
       </Menu>
 
       <Box sx={{ pt: 10 }}>
-        <PetList pets={filteredPets} />
+        <Container maxWidth="lg">
+          <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
+            <Button
+              variant={showFavorites ? "outlined" : "contained"}
+              onClick={() => setShowFavorites(false)}
+            >
+              Все питомцы
+            </Button>
+            <Button
+              variant={showFavorites ? "contained" : "outlined"}
+              onClick={() => setShowFavorites(true)}
+              startIcon={<Favorite />}
+            >
+              Избранное ({favorites.length})
+            </Button>
+          </Stack>
+        </Container>
+
+        {showFavorites ? (
+          <FavoritesList favorites={favorites} setShowFavorites={() => setShowFavorites(false)} />
+        ) : (
+          <PetList pets={filteredPets} />
+        )}
       </Box>
     </Box>
   );

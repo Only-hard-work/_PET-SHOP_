@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { login } from "../../actions/auth.actions";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { useAppDispatch } from "../../stores/configureStore";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -36,9 +36,7 @@ const LoginForm: React.FC = () => {
             fullWidth
             margin="normal"
             value={formData.email}
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
           />
           <TextField
@@ -48,9 +46,7 @@ const LoginForm: React.FC = () => {
             fullWidth
             margin="normal"
             value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             required
           />
           <Box display={"flex"} justifyContent={"flex-end"}>
@@ -64,13 +60,7 @@ const LoginForm: React.FC = () => {
             >
               Создать новый аккаунт
             </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              size="large"
-              sx={{ mt: 2 }}
-            >
+            <Button type="submit" variant="contained" color="primary" size="large" sx={{ mt: 2 }}>
               Вход
             </Button>
           </Box>

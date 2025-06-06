@@ -146,13 +146,7 @@ export const PetEditModal = ({ open, onClose, pet }: PetEditModalProps) => {
           outline: "none",
         }}
       >
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          align="center"
-          sx={{ mb: 4 }}
-        >
+        <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
           Редактировать питомца
         </Typography>
 
@@ -197,12 +191,7 @@ export const PetEditModal = ({ open, onClose, pet }: PetEditModalProps) => {
               onChange={handleImageChange}
             />
 
-            <Button
-              variant="outlined"
-              onClick={triggerFileInput}
-              color="secondary"
-              sx={{ mb: 1 }}
-            >
+            <Button variant="outlined" onClick={triggerFileInput} color="secondary" sx={{ mb: 1 }}>
               Изменить фото
             </Button>
           </Box>
@@ -324,11 +313,7 @@ export const PetEditModal = ({ open, onClose, pet }: PetEditModalProps) => {
               gap: 2,
             }}
           >
-            <Button
-              variant="outlined"
-              onClick={onClose}
-              disabled={isSubmitting}
-            >
+            <Button variant="outlined" onClick={onClose} disabled={isSubmitting}>
               Отмена
             </Button>
             <Button

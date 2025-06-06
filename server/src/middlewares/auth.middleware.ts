@@ -1,29 +1,28 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../config/config';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../config/config";
+import User from "../models/user.model";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: any;
-    }
+declare module "express" {
+  interface Request {
+    user?: User;
   }
 }
 
 export function checkJwt(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
-  
-  if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized' });
+
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const decoded = jwt.verify(token, JWT_SECRET) as User;
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Invalid token' });
+    res.status(401).json({ message: "Invalid token", payload: error });
   }
 }

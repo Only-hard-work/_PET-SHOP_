@@ -49,4 +49,6 @@ class PetService {
   }
 }
 
-export default new PetService();
+const petService = new PetService();
+
+export default petService;

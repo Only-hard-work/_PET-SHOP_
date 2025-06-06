@@ -1,5 +1,5 @@
 // Добавьте новый компонент FilterPanel
-import React from 'react';
+import React from "react";
 import {
   Paper,
   Box,
@@ -9,13 +9,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
-  TextField,
-  InputAdornment,
-  SelectChangeEvent
-} from '@mui/material';
+  SelectChangeEvent,
+} from "@mui/material";
 
 interface FilterPanelProps {
   filters: {
@@ -25,6 +20,7 @@ interface FilterPanelProps {
     age: [number, number];
     sortBy: string;
   };
+  // eslint-disable-next-line no-unused-vars
   onFilterChange: (name: string, value: any) => void;
 }
 
@@ -39,7 +35,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChang
         <Typography gutterBottom>Price Range</Typography>
         <Slider
           value={filters.priceRange}
-          onChange={(_, value) => onFilterChange('priceRange', value)}
+          onChange={(_, value) => onFilterChange("priceRange", value)}
           valueLabelDisplay="auto"
           min={0}
           max={5000}
@@ -51,7 +47,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChang
         <Select
           value={filters.type}
           label="Pet Type"
-          onChange={(e: SelectChangeEvent) => onFilterChange('type', e.target.value)}
+          onChange={(e: SelectChangeEvent) => onFilterChange("type", e.target.value)}
         >
           <MenuItem value="">All</MenuItem>
           <MenuItem value="dog">Dogs</MenuItem>
@@ -65,7 +61,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChang
         <Select
           value={filters.sortBy}
           label="Sort By"
-          onChange={(e: SelectChangeEvent) => onFilterChange('sortBy', e.target.value)}
+          onChange={(e: SelectChangeEvent) => onFilterChange("sortBy", e.target.value)}
         >
           <MenuItem value="price_asc">Price: Low to High</MenuItem>
           <MenuItem value="price_desc">Price: High to Low</MenuItem>
@@ -78,7 +74,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFilterChang
         <Typography gutterBottom>Age Range</Typography>
         <Slider
           value={filters.age}
-          onChange={(_, value) => onFilterChange('age', value)}
+          onChange={(_, value) => onFilterChange("age", value)}
           valueLabelDisplay="auto"
           min={0}
           max={15}

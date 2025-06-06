@@ -17,17 +17,14 @@ const initialState: cartState = {
 export default function cartReduer(state = initialState, action: any) {
   switch (action.type) {
     case CartActionTypes.ADD_TO_CART:
-      const existingItem = state.items.find(
-        (item) => item.pet.id === action.payload.id
-      );
+      // eslint-disable-next-line no-case-declarations
+      const existingItem = state.items.find((item) => item.pet.id === action.payload.id);
 
       if (existingItem) {
         return {
           ...state,
           items: state.items.map((item) =>
-            item.pet.id === action.payload.id
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
+            item.pet.id === action.payload.id ? { ...item, quantity: item.quantity + 1 } : item,
           ),
         };
       }

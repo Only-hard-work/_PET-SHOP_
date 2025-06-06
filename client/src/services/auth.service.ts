@@ -22,10 +22,6 @@ api.interceptors.request.use((config) => {
 });
 
 const AuthService = {
-  /**
-   * Регистрация нового пользователя
-   * @param userData Данные пользователя
-   */
   async register(userData: UserRegisterData) {
     try {
       const response = await api.post("/register", userData);
